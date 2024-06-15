@@ -11,7 +11,7 @@
 
 import { getStatus, getStats } from '../controllers/AppController';
 
-module.exports = function router(app) {
+module.exports = function router (app) {
   app.get('/status', (req, res) => {
     getStatus(req, res);
   });
