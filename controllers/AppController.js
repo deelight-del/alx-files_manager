@@ -29,7 +29,7 @@ function getStatus(req, res) {
   */
 
 async function getStats(req, res) {
-  const payLoad = { users: dbClient.nbUsers(), files: dbClient.nbFiles() };
+  const payLoad = { users: await dbClient.nbUsers(), files: await dbClient.nbFiles() };
   res.json(payLoad);
 }
 
