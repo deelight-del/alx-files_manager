@@ -16,6 +16,7 @@ const router = Router();
 
 router.get('/status', controllers.getStatus);
 router.get('/stats', controllers.getStats);
+router.post('/users');
 
 module.exports = router;
 
