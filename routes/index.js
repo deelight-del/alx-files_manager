@@ -9,13 +9,21 @@
  * return: Void.
  */
 
-import { getStatus, getStats } from '../controllers/AppController';
+import { Router } from 'express';
+import controllers from '../controllers/AppController';
 
-module.exports = function router (app) {
-  app.get('/status', (req, res) => {
-    getStatus(req, res);
-  });
-  app.get('/stats', async (req, res) => {
-    await getStats(req, res);
-  });
-};
+const router = Router();
+
+router.get('/status', controllers.getStatus);
+router.get('/stats', controllers.getStats);
+
+module.exports = router;
+
+// module.exports = function router(app) {
+//  app.get('/status', (req, res) => {
+//    getStatus(req, res);
+//  });
+//  app.get('/stats', async (req, res) => {
+//    await getStats(req, res);
+//  });
+// };

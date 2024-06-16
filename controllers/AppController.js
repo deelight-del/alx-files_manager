@@ -13,7 +13,7 @@ import redisClient from '../utils/redis';
   * return: None. But res will return object desire.
   */
 
-function getStatus (req, res) {
+function getStatus(req, res) {
   const payLoad = { redis: redisClient.isAlive(), db: dbClient.isAlive() };
   res.json(payLoad);
 }
@@ -28,7 +28,7 @@ function getStatus (req, res) {
   * return: None. But res will return object desire.
   */
 
-async function getStats (req, res) {
+async function getStats(req, res) {
   const payLoad = { users: await dbClient.nbUsers(), files: await dbClient.nbFiles() };
   res.json(payLoad);
 }
