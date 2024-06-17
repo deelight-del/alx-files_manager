@@ -11,12 +11,13 @@
 
 import { Router } from 'express';
 import controllers from '../controllers/AppController';
+import userControllers from '../controllers/UsersController';
 
 const router = Router();
 
 router.get('/status', controllers.getStatus);
 router.get('/stats', controllers.getStats);
-router.post('/users');
+router.post('/users', userControllers.postNew);
 
 module.exports = router;
 
