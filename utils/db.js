@@ -3,7 +3,7 @@
  * That uses MongoDB
  */
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { promisify } from 'util';
 // import { strict as assert } from 'assert';
 
@@ -73,6 +73,22 @@ class DBClient {
     if (!this.isAlive()) { return undefined; }
     // const findQuery = this.db.collection('users').find();
     const user = await this.db.collection('users').findOne({ email });
+    if (!user) {
+      return false;
+    }
+    return user;
+  }
+
+  /**
+  * findUserById - returns False if user does not exist, other wise return the found User.
+  * @email : email of user to find.
+  *
+  * Return - False || User object.
+  */
+
+  async findUserById(id) {
+    if (!this.isAlive()) { return undefined; }
+    const user = await this.db.collection('users').findOne({ _id: new ObjectId(id) });
     if (!user) {
       return false;
     }
