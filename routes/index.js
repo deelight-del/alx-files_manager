@@ -13,6 +13,7 @@ import { Router } from 'express';
 import controllers from '../controllers/AppController';
 import userControllers from '../controllers/UsersController';
 import authControllers from '../controllers/AuthController';
+import fileControllers from '../controllers/FilesController';
 
 const router = Router();
 
@@ -31,6 +32,9 @@ router.get('/connect', authControllers.getConnect);
 
 // Log-out route.
 router.get('/disconnect', authControllers.getDisconnect);
+
+// files route.
+router.post('/files', fileControllers.postUpload);
 
 module.exports = router;
 

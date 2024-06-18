@@ -111,6 +111,37 @@ class DBClient {
     )({ email, encryptedPassword });
     return saveResult.ops[0]._id;
   }
+
+  /**
+  * findFilesById - Function to find file given thd id of the file.
+  * @id : id of the file to find.
+  *
+  * return: false || file object.
+  */
+  async findFilesById(id) {
+    if (!this.isAlive()) { return undefined; }
+    const file = await this.db.collection('files').findOne({ _id: new ObjectId(id) });
+    if (!file) {
+      return false;
+    }
+    return file;
+  }
+
+  /**
+  * saveFile - Function to save a file docuemnt.
+  * @fileObject: The file Object to save.
+  *
+  * return : The id of the saved object.
+  */
+  async saveFile(fileObject) {
+    if (!this.isAlive()) { return undefined; }
+    const saveResult = await (promisify(
+      this.db.collection('files').insertOne,
+    ).bind(this.db.collection('files'))
+    )(fileObject);
+    // console.log('result ops[0].i', saveResult.ops[0]._id);
+    return saveResult.ops[0]._id;
+  }
 }
 
 const dbClient = new DBClient();
