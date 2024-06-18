@@ -22,10 +22,10 @@ async function postUpload(req, res) {
   const userId = await redisClient.get(`auth_${token}`);
   const user = await dbClient.findUserById(userId);
 
-  if (userId === undefined || user === undefined) {
-    res.status(500).json({});
-    return;
-  }
+  // if (userId === undefined || user === undefined) {
+  //  res.status(500).json({});
+  //  return;
+  // }
   if (user === false) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
