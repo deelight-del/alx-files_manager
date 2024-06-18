@@ -142,6 +142,22 @@ class DBClient {
     // console.log('result ops[0].i', saveResult.ops[0]._id);
     return saveResult.ops[0]._id;
   }
+
+  /**
+  * paginateFilesByParentId - Functions to paginate the result of a
+  * serarch by parentId, and return it as an array.
+  * @parentId : parentId to match our reuslt against.
+  * @pageNumber : The pageNumber that is zero index.
+  *
+  * result : undefined || array.
+  */
+
+  async paginateFilesByParentId(parentId, pageNumber, limit) {
+    if (!this.isAlive()) { return undefined; }
+    const findQuery = this.db.collection('files').find({ parentId }, { limit, skip: pageNumber * limit });
+    const arrayOfUsers = await (promisify(findQuery.toArray).bind(findQuery))();
+    return arrayOfUsers;
+  }
 }
 
 const dbClient = new DBClient();

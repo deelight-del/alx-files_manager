@@ -99,4 +99,60 @@ async function postUpload(req, res) {
   res.status(201).json(fileObject);
 }
 
-module.exports = { postUpload };
+/**
+  * getShow - Function for endpoint /files/:id. To retrieve document based on
+  * id.
+  * @req : The express request object.
+  * @res : The express response object.
+  *
+  * return : Nothing. But response object returns back something.
+  */
+
+async function getShow(req, res) {
+  const token = req.get('X-Token');
+  const userId = await redisClient.get(`auth_${token}`);
+  const user = await dbClient.findUserById(userId);
+
+  if (user === false) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const fileId = req.params.id;
+  const file = await dbClient.findFilesById(fileId);
+  if (file === false || file.userId !== userId) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  res.json(file);
+}
+
+/**
+  * getIndex - Function to retrieve all users file docs.
+  * for a given parentId, and with pagination.
+  * @req : The express request object.
+  * @res : The express response object.
+  *
+  * return :  THe response object sends back some information.
+  */
+async function getIndex(req, res) {
+  const token = req.get('X-Token');
+  const userId = await redisClient.get(`auth_${token}`);
+  const user = await dbClient.findUserById(userId);
+
+  if (user === false) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const parentId = req.query.parentId || 0;
+  console.log('parentId', parentId, req.query.parentId);
+  const page = req.params.page || 0;
+  // if isNaN(page) {
+  //  res.status(400).json({ error : 'Invalid page number'});
+  //  return;
+  // }
+  const files = await dbClient.paginateFilesByParentId(parentId, page, 20);
+  // console.log(files);
+  res.json(files);
+}
+
+module.exports = { postUpload, getShow, getIndex };

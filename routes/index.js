@@ -35,8 +35,8 @@ router.get('/disconnect', authControllers.getDisconnect);
 
 // files route.
 router.post('/files', fileControllers.postUpload);
-// router.get('/files/:id');
-// router.get('/files');
+router.get('/files/:id', fileControllers.getShow);
+router.get('/files', fileControllers.getIndex);
 
 module.exports = router;
 
