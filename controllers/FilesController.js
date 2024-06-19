@@ -6,6 +6,7 @@
 // Make imports.
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import mime from 'mime-types';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
@@ -218,10 +219,49 @@ async function putUnpublish(req, res) {
   res.json(file);
 }
 
+/**
+  * getFile - Function to return content of a file if available.
+  * @req : The express request object.
+  * @res : The express response object.
+  *
+  * return : Nothing. But res responds back to user.
+  */
+
+async function getFile(req, res) {
+  const token = req.get('X-Token');
+  const userId = await redisClient.get(`auth_${token}`);
+  // const user = await dbClient.findUserById(userId);
+  const fileId = req.params.id;
+  const file = dbClient.findFilesById(fileId);
+  if (file === false) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  if (file.isPublic === false
+  && file.userId !== userId) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  if (file.type === 'folder') {
+    res.status(400).json({ error: 'A folder doesn\'t have content' });
+    return;
+  }
+  if (!fs.existsSync(file.localPath)) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  const derivedMime = mime.lookup(file.name);
+  res.set('Content-Type', derivedMime);
+  const content = fs.readFileSync(file.localPath);
+  console.log(content);
+  res.json(content);
+}
+
 module.exports = {
   postUpload,
   getShow,
   getIndex,
   putPublish,
   putUnpublish,
+  getFile,
 };
