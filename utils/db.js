@@ -18,7 +18,7 @@ class DBClient {
     this.client = MongoClient.connect(uri, (err, client) => {
       if (err || !client) {
         this.connected = false;
-        console.log('Error while connecting', err || 'Unavailabe Server');
+        // console.log('Error while connecting', err || 'Unavailabe Server');
         // return;
       } else {
         this.connected = true;
