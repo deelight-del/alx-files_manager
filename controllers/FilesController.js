@@ -123,6 +123,9 @@ async function getShow(req, res) {
     res.status(404).json({ error: 'Not found' });
     return;
   }
+  file.id = file._id;
+  delete file._id;
+  delete file.localPath;
   res.json(file);
 }
 
@@ -144,14 +147,19 @@ async function getIndex(req, res) {
     return;
   }
   const parentId = req.query.parentId || 0;
-  console.log('parentId', parentId, req.query.parentId);
+  // console.log('parentId', parentId, req.query.parentId);
   const page = req.params.page || 0;
   // if isNaN(page) {
   //  res.status(400).json({ error : 'Invalid page number'});
   //  return;
   // }
   const files = await dbClient.paginateFilesByParentId(parentId, page, 20);
-  // console.log(files);
+  for (const obj of files) {
+    obj.id = obj._id;
+    delete obj.localPath;
+    delete obj._id;
+  }
+  // console.log('This files', files);
   res.json(files);
 }
 
