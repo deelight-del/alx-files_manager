@@ -232,11 +232,12 @@ async function getFile(req, res) {
   const userId = await redisClient.get(`auth_${token}`);
   // const user = await dbClient.findUserById(userId);
   const fileId = req.params.id;
-  const file = dbClient.findFilesById(fileId);
+  const file = await dbClient.findFilesById(fileId);
   if (file === false) {
     res.status(404).json({ error: 'Not found' });
     return;
   }
+  console.log('Actual Userid', userId, 'fileUserId', file.userId);
   if (file.isPublic === false
   && file.userId !== userId) {
     res.status(404).json({ error: 'Not found' });
@@ -253,8 +254,8 @@ async function getFile(req, res) {
   const derivedMime = mime.lookup(file.name);
   res.set('Content-Type', derivedMime);
   const content = fs.readFileSync(file.localPath);
-  console.log(content);
-  res.json(content);
+  console.log(content.toString());
+  res.send(content.toString('utf8'));
 }
 
 module.exports = {
