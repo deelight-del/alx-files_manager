@@ -164,7 +164,7 @@ async function getIndex(req, res) {
     delete obj._id;
   }
   // console.log('This files', files);
-  console.log(files.length);
+  // console.log(files.length);
   res.json(files);
 }
 
