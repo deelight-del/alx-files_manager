@@ -12,8 +12,8 @@ app.use(express.json());
 
 app.use(router);
 
-app.listen(port, () => {
-  // if (err) console.log(err);
+app.listen(port, (err) => {
+  if (err) console.log(err);
   console.log(`Server running on port ${port}`);
 });
 

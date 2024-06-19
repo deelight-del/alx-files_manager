@@ -19,11 +19,12 @@ class DBClient {
       if (err || !client) {
         this.connected = false;
         console.log('Error while connecting', err || 'Unavailabe Server');
-        return;
+        // return;
+      } else {
+        this.connected = true;
+        // console.log('Connected');
+        this.db = client ? client.db(database) : undefined;
       }
-      this.connected = true;
-      // console.log('Connected');
-      this.db = client.db(database);
     });
   }
 
