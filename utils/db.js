@@ -153,9 +153,9 @@ class DBClient {
   * result : undefined || array.
   */
 
-  async paginateFilesByParentId(parentId, pageNumber, limit) {
+  async paginateFilesByParentId(userId, parentId, pageNumber, limit) {
     if (!this.isAlive()) { return undefined; }
-    const findQuery = this.db.collection('files').find({ parentId }, { limit, skip: pageNumber * limit });
+    const findQuery = this.db.collection('files').find({ userId, parentId }, { limit, skip: pageNumber * limit });
     const arrayOfUsers = await (promisify(findQuery.toArray).bind(findQuery))();
     return arrayOfUsers;
   }

@@ -141,7 +141,6 @@ async function getIndex(req, res) {
   const token = req.get('X-Token');
   const userId = await redisClient.get(`auth_${token}`);
   const user = await dbClient.findUserById(userId);
-
   if (user === false) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
@@ -152,12 +151,10 @@ async function getIndex(req, res) {
   // console.log('page', page);
 
   // Modify charabeter
-  if (parentId === '0') { parentId = 0; }
-  // if isNaN(page) {
-  //  res.status(400).json({ error : 'Invalid page number'});
-  //  return;
-  // }
-  const files = await dbClient.paginateFilesByParentId(parentId, page, 20);
+  if (parentId === '0') { parentId = 0; } else { parentId = String(parentId); }
+  // console.log('user id', userId);
+  // console.log('patent id', parentId);
+  const files = await dbClient.paginateFilesByParentId(userId, parentId, page, 20);
   for (const obj of files) {
     obj.id = obj._id;
     delete obj.localPath;
