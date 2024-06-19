@@ -146,9 +146,13 @@ async function getIndex(req, res) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
-  const parentId = req.query.parentId || 0;
+  let parentId = req.query.parentId || 0;
   // console.log('parentId', parentId, req.query.parentId);
-  const page = req.params.page || 0;
+  const page = req.query.page || 0;
+  // console.log('page', page);
+
+  // Modify charabeter
+  if (parentId === '0') { parentId = 0; }
   // if isNaN(page) {
   //  res.status(400).json({ error : 'Invalid page number'});
   //  return;
@@ -160,6 +164,7 @@ async function getIndex(req, res) {
     delete obj._id;
   }
   // console.log('This files', files);
+  console.log(files.length);
   res.json(files);
 }
 
