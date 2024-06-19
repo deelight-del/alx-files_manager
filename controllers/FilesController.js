@@ -92,7 +92,6 @@ async function postUpload(req, res) {
     localPath: typeTest() ? newFilePath : undefined,
   };
   const id = await dbClient.saveFile(fileObject);
-  // console.log('id', id);
   fileObject.id = id;
   delete fileObject._id;
   delete fileObject.localPath;
@@ -146,23 +145,83 @@ async function getIndex(req, res) {
     return;
   }
   let parentId = req.query.parentId || 0;
-  // console.log('parentId', parentId, req.query.parentId);
   const page = req.query.page || 0;
-  // console.log('page', page);
 
   // Modify charabeter
   if (parentId === '0') { parentId = 0; } else { parentId = String(parentId); }
-  // console.log('user id', userId);
-  // console.log('patent id', parentId);
   const files = await dbClient.paginateFilesByParentId(userId, parentId, page, 20);
   for (const obj of files) {
     obj.id = obj._id;
     delete obj.localPath;
     delete obj._id;
   }
-  // console.log('This files', files);
-  // console.log(files.length);
   res.json(files);
 }
 
-module.exports = { postUpload, getShow, getIndex };
+/**
+  * putPublish - Function to make a file public or not.
+  * @req : The express request object.
+  * @res : The express response object.
+  *
+  * return : Nothing. But the response object sends something to the user.
+  */
+
+async function putPublish(req, res) {
+  const token = req.get('X-Token');
+  const userId = await redisClient.get(`auth_${token}`);
+  const user = await dbClient.findUserById(userId);
+
+  if (user === false) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const fileId = req.params.id;
+  let file = await dbClient.findFilesById(fileId);
+  if (file === false || file.userId !== userId) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  file = await dbClient.updateFileById(fileId, 'isPublic', true);
+  file.id = file._id;
+  delete file._id;
+  delete file.localPath;
+  res.json(file);
+}
+
+/**
+  * putUnpublish - Function to make a file not public.
+  * @req : The express request object.
+  * @res : The express response object.
+  *
+  * return : Nothing. But the response object sends something to the user.
+  */
+
+async function putUnpublish(req, res) {
+  const token = req.get('X-Token');
+  const userId = await redisClient.get(`auth_${token}`);
+  const user = await dbClient.findUserById(userId);
+
+  if (user === false) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const fileId = req.params.id;
+  let file = await dbClient.findFilesById(fileId);
+  if (file === false || file.userId !== userId) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  file = await dbClient.updateFileById(fileId, 'isPublic', false);
+  file.id = file._id;
+  delete file._id;
+  delete file.localPath;
+  res.json(file);
+}
+
+module.exports = {
+  postUpload,
+  getShow,
+  getIndex,
+  putPublish,
+  putUnpublish,
+};

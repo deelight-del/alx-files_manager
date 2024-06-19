@@ -159,6 +159,24 @@ class DBClient {
     const arrayOfUsers = await (promisify(findQuery.toArray).bind(findQuery))();
     return arrayOfUsers;
   }
+
+  /**
+   * updateFileById - function to update a given document in the
+   * mongodb.
+   * @id : id of the file to update.
+   * @field : field to upload.
+   * @value : value to update field to.
+   *
+   * return : --------
+   */
+  async updateFileById(id, field, value) {
+    await this.db.collection('files').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { [field]: value } },
+    );
+    const result = await this.findFilesById(id);
+    return result;
+  }
 }
 
 const dbClient = new DBClient();
