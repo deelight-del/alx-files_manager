@@ -9,9 +9,9 @@ import { promisify } from 'util';
 
 class DBClient {
   constructor() {
-    const host = process.env.DB_HOST ? process.DB_HOST : 'localhost';
-    const port = process.env.DB_PORT ? process.DB_PORT : 27017;
-    const database = process.env.DB_DATABASE ? process.DB_DATABASE : 'files_manager';
+    const host = process.env.DB_HOST || 'localhost';
+    const port = process.env.DB_PORT || 27017;
+    const database = process.env.DB_DATABASE || 'files_manager';
     const uri = `mongodb://${host}:${port}`;
     // this.db = undefined;
     this.connected = false;
