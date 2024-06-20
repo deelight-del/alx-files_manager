@@ -32,7 +32,7 @@ async function postUpload(req, res) {
     return;
   }
   const { name, type } = req.body;
-  const parentId = req.body.parentId || 0;
+  const parentId = req.body.parentId || '0';
   const isPublic = req.body.isPublic || false;
   const { data } = req.body;
   if (!name) {
@@ -47,7 +47,7 @@ async function postUpload(req, res) {
     res.status(400).json({ error: 'Missing data' });
     return;
   }
-  if (parentId !== 0) {
+  if (parentId !== '0') {
     const folder = await dbClient.findFilesById(parentId);
     if (!folder) {
       res.status(400).json({ error: 'Parent not found' });
@@ -125,7 +125,6 @@ async function getShow(req, res) {
   }
   if (String(file.userId) !== String(userId)) {
     res.status(404).json({ error: 'Not found' });
-    console.log('UserId actual', userId, 'file user Id', file.userId);
     return;
   }
   file.id = file._id;
@@ -150,13 +149,13 @@ async function getIndex(req, res) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
-  let parentId = req.query.parentId || 0;
+  const parentId = req.query.parentId || '0';
   const page = req.query.page || 0;
 
   // Modify charabeter
-  if (parentId === '0' || parentId === 0) { parentId = 0; } else { parentId = String(parentId); }
+  // if (parentId === '0' || parentId === 0) { parentId = 0; } else { parentId = String(parentId); }
   // If the ParentId is not linked to a folder.
-  if (parentId !== 0 && (await dbClient.findFilesById(parentId)).type !== 'folder') {
+  if (parentId !== '0' && (await dbClient.findFilesById(parentId)).type !== 'folder') {
     res.json([]);
     return;
   }
@@ -188,7 +187,7 @@ async function putPublish(req, res) {
   }
   const fileId = req.params.id;
   let file = await dbClient.findFilesById(fileId);
-  if (file === false || file.userId !== userId) {
+  if (file === false || String(file.userId) !== String(userId)) {
     res.status(404).json({ error: 'Not found' });
     return;
   }
@@ -218,7 +217,7 @@ async function putUnpublish(req, res) {
   }
   const fileId = req.params.id;
   let file = await dbClient.findFilesById(fileId);
-  if (file === false || file.userId !== userId) {
+  if (file === false || String(file.userId) !== String(userId)) {
     res.status(404).json({ error: 'Not found' });
     return;
   }
