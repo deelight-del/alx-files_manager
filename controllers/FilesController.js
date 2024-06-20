@@ -32,7 +32,7 @@ async function postUpload(req, res) {
     return;
   }
   const { name, type } = req.body;
-  const parentId = req.body.parentId || '0';
+  const parentId = req.body.parentId || 0;
   const isPublic = req.body.isPublic || false;
   const { data } = req.body;
   if (!name) {
@@ -47,7 +47,7 @@ async function postUpload(req, res) {
     res.status(400).json({ error: 'Missing data' });
     return;
   }
-  if (parentId !== '0') {
+  if (parentId !== 0) {
     const folder = await dbClient.findFilesById(parentId);
     if (!folder) {
       res.status(400).json({ error: 'Parent not found' });
