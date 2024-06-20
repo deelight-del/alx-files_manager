@@ -119,8 +119,13 @@ async function getShow(req, res) {
   }
   const fileId = req.params.id;
   const file = await dbClient.findFilesById(fileId);
-  if (file === false || file.userId !== userId) {
+  if (file === false) {
     res.status(404).json({ error: 'Not found' });
+    return;
+  }
+  if (String(file.userId) !== String(userId)) {
+    res.status(404).json({ error: 'Not found' });
+    console.log('UserId actual', userId, 'file user Id', file.userId);
     return;
   }
   file.id = file._id;
