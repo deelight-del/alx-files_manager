@@ -89,6 +89,10 @@ class DBClient {
 
   async findUserById(id) {
     if (!this.isAlive()) { return undefined; }
+
+    if (id === undefined || id === null) {
+      return false;
+    }
     if (id.length !== 12 && !(/^[0-9a-fA-F]{24}$/.test(id))) {
       return false;
     }
