@@ -246,9 +246,9 @@ async function getFile(req, res) {
     res.status(404).json({ error: 'Not found' });
     return;
   }
-  console.log('Actual Userid', userId, 'fileUserId', file.userId);
+  // console.log('Actual Userid', userId, 'fileUserId', file.userId);
   if (file.isPublic === false
-  && file.userId !== userId) {
+  && String(file.userId) !== String(userId)) {
     res.status(404).json({ error: 'Not found' });
     return;
   }
