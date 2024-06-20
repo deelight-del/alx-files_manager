@@ -149,7 +149,12 @@ async function getIndex(req, res) {
   const page = req.query.page || 0;
 
   // Modify charabeter
-  if (parentId === '0') { parentId = 0; } else { parentId = String(parentId); }
+  if (parentId === '0' || parentId === 0) { parentId = 0; } else { parentId = String(parentId); }
+  // If the ParentId is not linked to a folder.
+  if (parentId !== 0 && (await dbClient.findFilesById(parentId)).type !== 'folder') {
+    res.json([]);
+    return;
+  }
   const files = await dbClient.paginateFilesByParentId(userId, parentId, page, 20);
   for (const obj of files) {
     obj.id = obj._id;

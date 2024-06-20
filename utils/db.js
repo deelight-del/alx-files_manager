@@ -89,6 +89,9 @@ class DBClient {
 
   async findUserById(id) {
     if (!this.isAlive()) { return undefined; }
+    if (id.length !== 12 && !(/^[0-9a-fA-F]{24}$/.test(id))) {
+      return false;
+    }
     const user = await this.db.collection('users').findOne({ _id: new ObjectId(id) });
     if (!user) {
       return false;
@@ -121,6 +124,11 @@ class DBClient {
   */
   async findFilesById(id) {
     if (!this.isAlive()) { return undefined; }
+    // An attempt to avoid errors.
+    // /^[0-9a-fA-F]{24}$/.test()
+    if (id.length !== 12 && !(/^[0-9a-fA-F]{24}$/.test(id))) {
+      return false;
+    }
     const file = await this.db.collection('files').findOne({ _id: new ObjectId(id) });
     if (!file) {
       return false;
