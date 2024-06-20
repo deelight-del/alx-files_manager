@@ -27,7 +27,7 @@ async function getConnect(req, res) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
-  if (user.encryptedPassword !== sha1(password)) {
+  if (user.password !== sha1(password)) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }

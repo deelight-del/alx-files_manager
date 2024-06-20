@@ -107,12 +107,12 @@ class DBClient {
   *
   * Return - object containing id and email of added user.
   */
-  async saveUser(email, encryptedPassword) {
+  async saveUser(email, password) {
     if (!this.isAlive()) { return undefined; }
     const saveResult = await (promisify(
       this.db.collection('users').insertOne,
     ).bind(this.db.collection('users'))
-    )({ email, encryptedPassword });
+    )({ email, password });
     return saveResult.ops[0]._id;
   }
 
